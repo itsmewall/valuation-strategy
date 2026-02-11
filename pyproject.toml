@@ -1,0 +1,34 @@
+[project]
+name = "valuation-strategy"
+version = "0.1.0"
+description = "Engine de simulação estratégica baseada em valuation (DCF)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Seu Nome", email = "seu.email@exemplo.com"}
+]
+dependencies = [
+    "flask",  # Web framework minimalista e suficiente para o escopo.
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I"]  # pycodestyle, pyflakes, isort
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
