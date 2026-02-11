@@ -1,7 +1,6 @@
-from .finance import discount, project_fcfs, terminal_value
-from .model import Inputs, Output, ScenarioResult
+from .model import ScenarioResult, Inputs, Output
 from .strategy import adjust_assumptions
-
+from .finance import project_fcfs, discount, terminal_value
 
 def scenario_multipliers() -> dict[str, tuple[float, float]]:
     """
@@ -13,22 +12,32 @@ def scenario_multipliers() -> dict[str, tuple[float, float]]:
         "pessimistic": (-0.02, 0.01),   # -2% growth, +1% wacc
     }
 
-
 def run_one(inputs: Inputs, name: str, growth: float, wacc: float) -> ScenarioResult:
-    fcfs = project_fcfs(inputs, growth=growth)
-    pv_fcfs = discount(fcfs, wacc=wacc)
+    # 1. Project cash flows & revenues
+    fcfs, revenues = project_fcfs(inputs, growth)  # Modified project_fcfs below to return tuple
 
-    tv = terminal_value(fcfs[-1], wacc=wacc, g=inputs.terminal_g) if fcfs else 0.0
-    pv_terminal = tv / ((1.0 + wacc) ** inputs.years)
+    # 2. Discount explicit period
+    pv_fcfs = discount(fcfs, wacc)
 
-    ev = pv_fcfs + pv_terminal
+    # 3. Terminal Value
+    # FCF(n+1) approx = FCF(n) * (1 + terminal_g)
+    fcf_last = fcfs[-1]
+    tv = terminal_value(fcf_last, wacc, inputs.terminal_g)
+    
+    # discount TV back to present (t=years)
+    pv_tv = tv / ((1 + wacc) ** inputs.years)
+
+    ev = pv_fcfs + pv_tv
+
     return ScenarioResult(
-        name=name,
+        scenario_name=name,
         growth=growth,
         wacc=wacc,
-        enterprise_value=ev,
         pv_fcfs=pv_fcfs,
-        pv_terminal=pv_terminal,
+        pv_terminal=pv_tv,
+        enterprise_value=ev,
+        revenue_series=revenues,
+        fcf_series=fcfs
     )
 
 
@@ -50,5 +59,13 @@ def run_valuation(inputs: Inputs) -> Output:
     terminal_share = 0.0
     if base.enterprise_value > 0:
         terminal_share = base.pv_terminal / base.enterprise_value
+    
+    years_labels = list(range(1, inputs.years + 1))
 
-    return Output(base=base, optimistic=opt, pessimistic=pes, terminal_share_base=terminal_share)
+    return Output(
+        base=base, 
+        optimistic=opt, 
+        pessimistic=pes, 
+        terminal_share_base=terminal_share,
+        years_labels=years_labels
+    )

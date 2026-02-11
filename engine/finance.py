@@ -1,18 +1,12 @@
 from .model import Inputs
 
-
-def project_fcfs(inputs: Inputs, growth: float) -> list[float]:
+def project_fcfs(inputs: Inputs, growth: float) -> tuple[list[float], list[float]]:
     """
-    FCF simplificado por ano:
-    EBIT = Receita * margem
-    NOPAT = EBIT * (1 - tax)
-    D&A = Receita * da_pct
-    CAPEX = Receita * capex_pct
-    ΔNWC = Receita * nwc_pct
-    FCF = NOPAT + D&A - CAPEX - ΔNWC
+    Returns (fcfs_list, revenue_list)
     """
     rev = inputs.revenue0
     fcfs: list[float] = []
+    revenues: list[float] = []
 
     for _ in range(inputs.years):
         rev = rev * (1.0 + growth)
@@ -22,23 +16,24 @@ def project_fcfs(inputs: Inputs, growth: float) -> list[float]:
         capex = rev * inputs.capex_pct
         dnwc = rev * inputs.nwc_pct
         fcf = nopat + da - capex - dnwc
+        
         fcfs.append(fcf)
+        revenues.append(rev)
 
-    return fcfs
+    return fcfs, revenues
 
 
-def discount(values: list[float], wacc: float) -> float:
+def discount(flows: list[float], r: float) -> float:
     pv = 0.0
-    for t, v in enumerate(values, start=1):
-        pv += v / ((1.0 + wacc) ** t)
+    for i, flow in enumerate(flows):
+        t = i + 1
+        pv += flow / ((1 + r) ** t)
     return pv
 
 
-def terminal_value(last_fcf: float, wacc: float, g: float) -> float:
-    # Gordon Growth: TV = FCF_{t+1} / (WACC - g)
-    fcf_next = last_fcf * (1.0 + g)
-    denom = (wacc - g)
-    if denom <= 0:
-        # Evita explosão; MVP: retorna 0 em caso inválido
-        return 0.0
+def terminal_value(fcf_n: float, wacc: float, g: float) -> float:
+    # Gordon Growth Model: TV = FCF(n+1) / (WACC - g)
+    # Ensure WACC > g for sanity (or clamp denom)
+    denom = max(0.001, wacc - g)
+    fcf_next = fcf_n * (1 + g)
     return fcf_next / denom

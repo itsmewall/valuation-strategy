@@ -16,146 +16,217 @@
 <!-- Key Metrics Panel -->
 <div class="grid-3" style="margin-bottom: 2rem;">
 
+    <!-- Base Case -->
     <div class="metric-card">
-        <div class="metric-label">Valor Justo (Cenário Base)</div>
-        <div class="metric-value">{{ "{:,.0f}".format(out.base.enterprise_value) }}</div>
-        <div class="metric-delta">Retorno Exigido Ajustado: {{ "{:.1%}".format(out.base.wacc) }}</div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 0.5rem;">
+            <div class="metric-label">Valor Estimado do Negócio (Hoje)</div>
+            <div class="help-wrapper">
+                <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                <div class="help-bubble">Valor da Empresa (Enterprise Value) estimado via DCF: Soma do valor presente
+                    dos fluxos de caixa futuros + valor terminal.</div>
+            </div>
+        </div>
+
+        <div class="metric-value">R$ {{ "{:,.0f}".format(out.base.enterprise_value) }}</div>
+
+        <div class="metric-desc"
+            style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4;">
+            É o valor presente da empresa hoje, baseado na capacidade futura de gerar caixa.
+        </div>
+
+        <div style="border-top: 1px solid var(--border-light); padding-top: 0.75rem; margin-top: auto;">
+            <div class="metric-detail-row">
+                <span>Projeção:</span>
+                <strong>{{ inputs.years }} anos</strong>
+            </div>
+            <div class="metric-detail-row">
+                <span>Crescimento (g):</span>
+                <strong>{{ "{:.1%}".format(out.base.growth) }}</strong>
+            </div>
+            <div class="metric-detail-row">
+                <span>Retorno Mínimo (Risco):</span>
+                <strong>{{ "{:.1%}".format(out.base.wacc) }}</strong>
+            </div>
+        </div>
     </div>
 
+    <!-- Optimistic Case -->
     <div class="metric-card bg-success-subtle" style="border-color: #A7F3D0;">
-        <div class="metric-label text-success">Cenário Otimista</div>
-        <div class="metric-value text-success">{{ "{:,.0f}".format(out.optimistic.enterprise_value) }}</div>
-        <div class="metric-delta text-success">+{{ "{:.1%}".format((out.optimistic.enterprise_value /
-            out.base.enterprise_value) - 1.0) }} Potencial</div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 0.5rem;">
+            <div class="metric-label text-success">Se der tudo mais certo (Otimista)</div>
+            <div class="help-wrapper">
+                <button type="button" class="help-btn" aria-label="Ajuda"
+                    style="border-color: #059669; color: #059669;">?</button>
+                <div class="help-bubble">Cenário com crescimento maior e menor risco percebido pelo mercado.</div>
+            </div>
+        </div>
+
+        <div class="metric-value text-success">R$ {{ "{:,.0f}".format(out.optimistic.enterprise_value) }}</div>
+
+        <div class="metric-desc"
+            style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4;">
+            Estimativa superior: ~{{ "{:.1%}".format((out.optimistic.enterprise_value / out.base.enterprise_value) -
+            1.0) }} acima do valor base.
+        </div>
+
+        <div style="border-top: 1px solid #A7F3D0; padding-top: 0.75rem; margin-top: auto;">
+            <div class="metric-detail-row">
+                <span>Crescimento (g):</span>
+                <strong>{{ "{:.1%}".format(out.optimistic.growth) }}</strong>
+            </div>
+            <div class="metric-detail-row">
+                <span>Retorno Mínimo (Risco):</span>
+                <strong>{{ "{:.1%}".format(out.optimistic.wacc) }}</strong>
+            </div>
+        </div>
     </div>
 
+    <!-- Pessimistic Case -->
     <div class="metric-card bg-danger-subtle" style="border-color: #FECACA;">
-        <div class="metric-label text-danger">Cenário Conservador</div>
-        <div class="metric-value text-danger">{{ "{:,.0f}".format(out.pessimistic.enterprise_value) }}</div>
-        <div class="metric-delta text-danger">{{ "{:.1%}".format((out.pessimistic.enterprise_value /
-            out.base.enterprise_value) - 1.0) }} Risco</div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 0.5rem;">
+            <div class="metric-label text-danger">Se der mais errado (Conservador)</div>
+            <div class="help-wrapper">
+                <button type="button" class="help-btn" aria-label="Ajuda"
+                    style="border-color: #DC2626; color: #DC2626;">?</button>
+                <div class="help-bubble">Cenário com crescimento menor e maior percepção de risco (custo de capital mais
+                    alto).</div>
+            </div>
+        </div>
+
+        <div class="metric-value text-danger">R$ {{ "{:,.0f}".format(out.pessimistic.enterprise_value) }}</div>
+
+        <div class="metric-desc"
+            style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4;">
+            Estimativa inferior: ~{{ "{:.1%}".format(1.0 - (out.pessimistic.enterprise_value /
+            out.base.enterprise_value)) }} abaixo do valor base.
+        </div>
+
+        <div style="border-top: 1px solid #FECACA; padding-top: 0.75rem; margin-top: auto;">
+            <div class="metric-detail-row">
+                <span>Crescimento (g):</span>
+                <strong>{{ "{:.1%}".format(out.pessimistic.growth) }}</strong>
+            </div>
+            <div class="metric-detail-row">
+                <span>Retorno Mínimo (Risco):</span>
+                <strong>{{ "{:.1%}".format(out.pessimistic.wacc) }}</strong>
+            </div>
+        </div>
     </div>
 
 </div>
 
-<!-- Deep Dive Section -->
-<div class="grid-2">
+<!-- Charts Section -->
+<section class="panel">
+    <div class="panel-header">
+        <h2 class="panel-title">Em {{ inputs.years }} anos, seu negócio tende a...</h2>
+        <p class="panel-subtitle">Projeção visual de receita e fluxo de caixa livre.</p>
+    </div>
 
-    <!-- Premissas Usadas -->
-    <div class="panel">
-        <div class="panel-header">
-            <h3 class="panel-title">Premissas Utilizadas (Base)</h3>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 1rem;">
-            <div class="label-wrapper">
-                <label>Crescimento Base (g)</label>
-                <div class="help-wrapper">
-                    <button type="button" class="help-btn" aria-label="Ajuda">?</button>
-                    <div class="help-bubble">Taxa de crescimento composta anual (CAGR) projetada para o período
-                        explícito, ajustada pelo Moat e Competição.</div>
+    <div class="grid-2">
+        <!-- Revenue Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div>
+                    <h4 class="chart-title">Receita Projetada (R$)</h4>
+                    <div class="chart-subtitle">Crescimento da linha de topo (vendas).</div>
                 </div>
             </div>
-            <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
-                {{ "{:.1%}".format(out.base.growth) }}
+            <!-- SVG Container -->
+            <div class="chart-wrapper">
+                <svg id="revenueChart" width="100%" height="220" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+            <div class="chart-legend">
+                <span class="legend-item"><span class="dot base"></span>Base</span>
+                <span class="legend-item"><span class="dot opt"></span>Otimista</span>
+                <span class="legend-item"><span class="dot pes"></span>Conservador</span>
             </div>
         </div>
 
-        <div class="form-group" style="margin-bottom: 1rem;">
-            <div class="label-wrapper">
-                <label>Custo de Capital (WACC)</label>
-                <div class="help-wrapper">
-                    <button type="button" class="help-btn" aria-label="Ajuda">?</button>
-                    <div class="help-bubble">Taxa de desconto final ajustada pelo Risco de Execução e Fornecedores.
+        <!-- FCF Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div>
+                    <h4 class="chart-title">Caixa Gerado (FCF, R$)</h4>
+                    <div class="chart-subtitle">Fluxo de Caixa Livre disponível para o acionista.</div>
+                </div>
+            </div>
+            <!-- SVG Container -->
+            <div class="chart-wrapper">
+                <svg id="fcfChart" width="100%" height="220" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+            <div class="chart-legend">
+                <span class="legend-item"><span class="dot base"></span>Base</span>
+                <span class="legend-item"><span class="dot opt"></span>Otimista</span>
+                <span class="legend-item"><span class="dot pes"></span>Conservador</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Details & Insights (Collapsible) -->
+<details class="panel" style="padding: 0; overflow: hidden; margin-top: 2rem;">
+    <summary
+        style="padding: 1.5rem; background: #F9FAFB; cursor: pointer; font-weight: 600; color: var(--text-secondary); outline: none;">
+        Ver Detalhes Técnicos e Premissas
+    </summary>
+
+    <div class="grid-2" style="padding: 1.5rem; border-top: 1px solid var(--border-light);">
+
+        <!-- Premissas Usadas -->
+        <div>
+            <div class="panel-header" style="border: none; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                <h3 class="panel-title">Premissas Utilizadas (Base)</h3>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="label-wrapper">
+                    <label>Crescimento Base (g)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Taxa de crescimento composta anual (CAGR) projetada para o período
+                            explícito, ajustada pelo Moat e Competição.</div>
                     </div>
                 </div>
-            </div>
-            <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
-                {{ "{:.1%}".format(out.base.wacc) }}
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="label-wrapper">
-                <label>Peso da Perpetuidade</label>
-                <div class="help-wrapper">
-                    <button type="button" class="help-btn" aria-label="Ajuda">?</button>
-                    <div class="help-bubble">Porcentagem do valor total que vem dos fluxos de caixa após o ano {{
-                        inputs.years }}.</div>
+                <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
+                    {{ "{:.1%}".format(out.base.growth) }}
                 </div>
             </div>
-            <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
-                {{ "{:.1%}".format(out.terminal_share_base) }}
+            <!-- ... additional details ... -->
+        </div>
+
+        <!-- Insights Estruturais -->
+        <div>
+            <div class="panel-header" style="border: none; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                <h3 class="panel-title">Insights Estratégicos</h3>
             </div>
+            <ul class="insights-list">
+                <li>
+                    <strong>Dependência do Futuro:</strong>
+                    {{ "{:.1%}".format(out.terminal_share_base) }} do valor da empresa está dependente da promessa de
+                    longo prazo (perpetuidade).
+                </li>
+                <!-- ... additional insights ... -->
+            </ul>
         </div>
 
     </div>
+</details>
 
-    <!-- Insights Estruturais -->
-    <div class="panel">
-        <div class="panel-header">
-            <h3 class="panel-title">Insights Estratégicos</h3>
-        </div>
-
-        <ul class="insights-list">
-            <li>
-                <strong>Dependência do Futuro:</strong>
-                {{ "{:.1%}".format(out.terminal_share_base) }} do valor da empresa está dependente da promessa de longo
-                prazo (perpetuidade).
-                {% if out.terminal_share_base > 0.7 %}
-                <span class="text-warning" style="font-size: 0.8rem; font-weight: 500;">(Alto Risco)</span>
-                {% endif %}
-            </li>
-            <li>
-                <strong>Spread de Risco:</strong>
-                A diferença entre o cenário otimista e conservador é de {{ "{:.1%}".format(out.pessimistic.wacc -
-                out.optimistic.wacc) }} no custo de capital. Melhorar a execução reduz essa incerteza.
-            </li>
-            <li>
-                <strong>Alavancagem Operacional:</strong>
-                Com uma margem de {{ "{:.1%}".format(inputs.ebit_margin) }}, a eficiência operacional é um fator crítico
-                para a criação de valor.
-            </li>
-        </ul>
-    </div>
-
-</div>
-
-<!-- Tabela Resumo -->
-<div class="panel" style="padding: 0; overflow: hidden; margin-top: 2rem;">
-    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-light);">
-        <h3 class="panel-title">Matriz de Sensibilidade</h3>
-    </div>
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Cenário</th>
-                <th class="col-right">Crescimento (g)</th>
-                <th class="col-right">Retorno Exigido</th>
-                <th class="col-right">Avaliação (EV)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="font-weight: 500;">Base</td>
-                <td class="col-right">{{ "{:.1%}".format(out.base.growth) }}</td>
-                <td class="col-right">{{ "{:.1%}".format(out.base.wacc) }}</td>
-                <td class="col-right" style="font-weight: 600;">{{ "{:,.0f}".format(out.base.enterprise_value) }}</td>
-            </tr>
-            <tr>
-                <td>Otimista</td>
-                <td class="col-right">{{ "{:.1%}".format(out.optimistic.growth) }}</td>
-                <td class="col-right">{{ "{:.1%}".format(out.optimistic.wacc) }}</td>
-                <td class="col-right">{{ "{:,.0f}".format(out.optimistic.enterprise_value) }}</td>
-            </tr>
-            <tr>
-                <td>Conservador</td>
-                <td class="col-right">{{ "{:.1%}".format(out.pessimistic.growth) }}</td>
-                <td class="col-right">{{ "{:.1%}".format(out.pessimistic.wacc) }}</td>
-                <td class="col-right">{{ "{:,.0f}".format(out.pessimistic.enterprise_value) }}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+<!-- Data Injection via JSON Script -->
+<script type="application/json" id="chart-data">
+{
+  "labels": {{ out.years_labels | tojson }},
+  "revenue": {
+    "base": {{ out.base.revenue_series | tojson }},
+    "opt": {{ out.optimistic.revenue_series | tojson }},
+    "pes": {{ out.pessimistic.revenue_series | tojson }}
+  },
+  "fcf": {
+    "base": {{ out.base.fcf_series | tojson }},
+    "opt": {{ out.optimistic.fcf_series | tojson }},
+    "pes": {{ out.pessimistic.fcf_series | tojson }}
+  }
+}
+</script>
 
 {% endblock %}
