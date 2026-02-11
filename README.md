@@ -25,7 +25,7 @@ valstrat/
   pyproject.toml
   .env.example
   .gitignore
-  run.py
+  app.py
   config.py
   engine/
     __init__.py
@@ -69,7 +69,7 @@ valstrat/
 
 4.  **Execute a aplicação**:
     ```bash
-    python run.py
+    python app.py
     ```
     Acesse no navegador: `http://127.0.0.1:5000`
 
