@@ -2,196 +2,239 @@
 
 {% block content %}
 <form method="post" action="/results">
+
     <div class="grid-2">
-
-        <!-- Painel Operacional -->
+        <!-- Seção A: O Negócio Hoje -->
         <section class="panel">
             <div class="panel-header">
-                <h2 class="panel-title">Dados Operacionais</h2>
-                <p class="panel-subtitle">Premissas financeiras e estrutura de capital.</p>
-            </div>
-
-            <div class="grid-2">
-                <div class="form-group">
-                    <div class="label-wrapper">
-                        <label for="revenue0">Receita Inicial (Ano 0)</label>
-                        <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                        <div class="tooltip-content">
-                            Receita líquida total no último ano fiscal. Base de cálculo para todas as projeções futuras.
-                        </div>
-                    </div>
-                    <input id="revenue0" name="revenue0" type="number" step="0.01" value="1000000" class="input-control"
-                        required>
-                </div>
-
-                <div class="form-group">
-                    <div class="label-wrapper">
-                        <label for="terminal_g">Crescimento Terminal (g)</label>
-                        <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                        <div class="tooltip-content">
-                            Taxa de crescimento perpétuo aplicada ao fluxo de caixa no estágio de maturidade (após o ano
-                            5). Geralmente alinhada à inflação.
-                        </div>
-                    </div>
-                    <input id="terminal_g" name="terminal_g" type="number" step="0.001" value="0.03"
-                        class="input-control" placeholder="0.03" required>
-                </div>
-            </div>
-
-            <div style="margin: 1.5rem 0; height: 1px; background: var(--border-light);"></div>
-
-            <div class="grid-2">
-                <div class="form-group">
-                    <div class="label-wrapper">
-                        <label for="ebit_margin">Margem EBIT (%)</label>
-                        <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                        <div class="tooltip-content">
-                            Lucro operacional antes de juros e impostos sobre a receita líquida. Mede a eficiência
-                            operacional pura.
-                        </div>
-                    </div>
-                    <input id="ebit_margin" name="ebit_margin" type="number" step="0.001" value="0.18"
-                        class="input-control" placeholder="0.18" required>
-                </div>
-
-                <div class="form-group">
-                    <div class="label-wrapper">
-                        <label for="tax_rate">Taxa de Imposto (%)</label>
-                        <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                        <div class="tooltip-content">
-                            Alíquota efetiva de tributação sobre o lucro (ex: IR + CSLL).
-                        </div>
-                    </div>
-                    <input id="tax_rate" name="tax_rate" type="number" step="0.001" value="0.34" class="input-control"
-                        placeholder="0.34" required>
-                </div>
-
-                <div class="form-group">
-                    <div class="label-wrapper">
-                        <label for="capex_pct">CAPEX (% Rec)</label>
-                        <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                        <div class="tooltip-content">
-                            Capital Expenditure: Investimento em ativos fixos para manutenção ou expansão, como % da
-                            receita.
-                        </div>
-                    </div>
-                    <input id="capex_pct" name="capex_pct" type="number" step="0.001" value="0.05" class="input-control"
-                        placeholder="0.05" required>
-                </div>
-
-                <div class="form-group">
-                    <div class="label-wrapper">
-                        <label for="da_pct">D&A (% Rec)</label>
-                        <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                        <div class="tooltip-content">
-                            Depreciação e Amortização. Despesa não-caixa que é somada de volta no cálculo do fluxo
-                            livre.
-                        </div>
-                    </div>
-                    <input id="da_pct" name="da_pct" type="number" step="0.001" value="0.03" class="input-control"
-                        placeholder="0.03" required>
-                </div>
-
-                <div class="form-group">
-                    <div class="label-wrapper">
-                        <label for="nwc_pct">Δ NWC (% Rec)</label>
-                        <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                        <div class="tooltip-content">
-                            Variação do Capital de Giro Líquido: Dinheiro "preso" na operação (Estoques + Contas a
-                            Receber - Contas a Pagar).
-                        </div>
-                    </div>
-                    <input id="nwc_pct" name="nwc_pct" type="number" step="0.001" value="0.01" class="input-control"
-                        placeholder="0.01" required>
-                </div>
-
-                <div class="form-group">
-                    <div class="label-wrapper">
-                        <label for="wacc">WACC Nominal (%)</label>
-                        <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                        <div class="tooltip-content">
-                            Weighted Average Cost of Capital. É a taxa de desconto que reflete o custo de oportunidade e
-                            o risco do dinheiro investido.
-                        </div>
-                    </div>
-                    <input id="wacc" name="wacc" type="number" step="0.001" value="0.12" class="input-control"
-                        placeholder="0.12" required>
-                </div>
-            </div>
-
-            <div class="form-group" style="margin-top: 1rem;">
-                <div class="label-wrapper">
-                    <label for="years">Horizonte de Projeção (Anos)</label>
-                    <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                    <div class="tooltip-content">
-                        Número de anos projetados explicitamente antes de aplicar o valor terminal. Padrão de mercado: 5
-                        a 10 anos.
-                    </div>
-                </div>
-                <input id="years" name="years" type="number" value="5" max="15" class="input-control" required>
-            </div>
-        </section>
-
-        <!-- Painel Estratégico -->
-        <section class="panel">
-            <div class="panel-header">
-                <h2 class="panel-title">Drivers Estratégicos</h2>
-                <p class="panel-subtitle">Ajustes qualitativos (Score 0-100).</p>
+                <h2 class="panel-title">A) Seu Negócio (Hoje)</h2>
+                <p class="panel-subtitle">O ponto de partida baseado na realidade financeira atual.</p>
             </div>
 
             <div class="form-group">
                 <div class="label-wrapper">
-                    <label for="moat">Moat Competitivo</label>
-                    <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                    <div class="tooltip-content">
-                        Vantagem competitiva durável (marca forte, patentes, efeito de rede, custo de troca alto).
+                    <label for="revenue0">Faturamento Anual Atual (R$)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Receita Líquida base projetada. Ponto de partida para todas as
+                            estimativas futuras.</div>
                     </div>
                 </div>
-                <input id="moat" name="moat" type="number" min="0" max="100" value="60" class="input-control" required>
-            </div>
-
-            <div class="form-group">
-                <div class="label-wrapper">
-                    <label for="competition">Competição de Mercado</label>
-                    <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                    <div class="tooltip-content">
-                        Nível de rivalidade. Quanto maior a nota, maior a pressão por preços baixos e margens menores.
-                    </div>
-                </div>
-                <input id="competition" name="competition" type="number" min="0" max="100" value="50"
-                    class="input-control" required>
-            </div>
-
-            <div class="form-group">
-                <div class="label-wrapper">
-                    <label for="supplier_risk">Risco da Cadeia de Suprimentos</label>
-                    <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                    <div class="tooltip-content">
-                        Dependência e poder de barganha dos fornecedores. Notas altas indicam risco de aumento de
-                        custos.
-                    </div>
-                </div>
-                <input id="supplier_risk" name="supplier_risk" type="number" min="0" max="100" value="50"
-                    class="input-control" required>
-            </div>
-
-            <div class="form-group">
-                <div class="label-wrapper">
-                    <label for="execution">Qualidade da Execução</label>
-                    <button type="button" class="help-trigger" aria-label="Ajuda">?</button>
-                    <div class="tooltip-content">
-                        Capacidade do management de entregar o plano de negócios e eficiência operacional.
-                    </div>
-                </div>
-                <input id="execution" name="execution" type="number" min="0" max="100" value="55" class="input-control"
+                <input id="revenue0" name="revenue0" type="number" step="0.01" value="1000000" class="input-control"
                     required>
+                <span class="input-hint">O tamanho atual da operação, sem descontar custos.</span>
             </div>
 
-            <div style="margin-top: 3rem;">
-                <button class="btn-primary" type="submit">Rodar Análise de Cenários</button>
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="ebit_margin">Margem Operacional Real (%)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Margem EBIT (Lucro Operacional / Receita). Eficiência pura antes de
+                            juros e impostos.</div>
+                    </div>
+                </div>
+                <input id="ebit_margin" name="ebit_margin" type="number" step="0.001" value="0.18" class="input-control"
+                    placeholder="0.18" required>
+                <span class="input-hint">Quanto sobra de cada venda após pagar a operação.</span>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="tax_rate">Impostos sobre Lucro (%)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Alíquota efetiva de tributação sobre o lucro operacional (IR + CSLL).
+                        </div>
+                    </div>
+                </div>
+                <input id="tax_rate" name="tax_rate" type="number" step="0.001" value="0.34" class="input-control"
+                    placeholder="0.34" required>
+                <span class="input-hint">A fatia do governo no resultado final.</span>
             </div>
         </section>
 
+        <!-- Seção B: Conversão em Caixa -->
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">B) Geração de Caixa</h2>
+                <p class="panel-subtitle">Como o lucro contábil vira dinheiro no bolso.</p>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="capex_pct">Reinvestimento em Ativos (% do Fat.)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">CAPEX (Capital Expenditure). Investimento em bens de capital para
+                            manter ou expandir a operação.</div>
+                    </div>
+                </div>
+                <input id="capex_pct" name="capex_pct" type="number" step="0.001" value="0.05" class="input-control"
+                    placeholder="0.05" required>
+                <span class="input-hint">Dinheiro que sai para comprar máquinas, reformas ou expansão.</span>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="da_pct">Despesas Não-Caixa (% do Fat.)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">D&A (Depreciação e Amortização). Custo contábil que reduz o lucro mas
+                            não consome caixa.</div>
+                    </div>
+                </div>
+                <input id="da_pct" name="da_pct" type="number" step="0.001" value="0.03" class="input-control"
+                    placeholder="0.03" required>
+                <span class="input-hint">Valor contábil que é somado de volta ao caixa.</span>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="nwc_pct">Capital de Giro Preso (% do Fat.)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Variação de NWC (Net Working Capital). Dinheiro retido em estoques e
+                            recebíveis.</div>
+                    </div>
+                </div>
+                <input id="nwc_pct" name="nwc_pct" type="number" step="0.001" value="0.01" class="input-control"
+                    placeholder="0.01" required>
+                <span class="input-hint">Caixa congelado na operação diária.</span>
+            </div>
+        </section>
     </div>
+
+    <div class="grid-2">
+        <!-- Seção C: Visão de Futuro -->
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">C) Risco e Crescimento</h2>
+                <p class="panel-subtitle">Expectativas de longo prazo e custo de oportunidade.</p>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="wacc">Retorno Mínimo Esperado (%)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">WACC Nominal (Custo Médio Ponderado de Capital). Taxa de desconto que
+                            reflete o risco do negócio.</div>
+                    </div>
+                </div>
+                <input id="wacc" name="wacc" type="number" step="0.001" value="0.12" class="input-control"
+                    placeholder="0.12" required>
+                <span class="input-hint">O retorno necessário para compensar o risco investido.</span>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="terminal_g">Crescimento Perpétuo (%)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Taxa G (Terminal Growth). Crescimento constante assumido para sempre
+                            após o período explícito.</div>
+                    </div>
+                </div>
+                <input id="terminal_g" name="terminal_g" type="number" step="0.001" value="0.03" class="input-control"
+                    placeholder="0.03" required>
+                <span class="input-hint">Ritmo de crescimento sustentável no longuíssimo prazo.</span>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="years">Horizonte de Planejamento (Anos)</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Período Explícito. Número de anos projetados detalhadamente antes da
+                            perpetuidade.</div>
+                    </div>
+                </div>
+                <input id="years" name="years" type="number" value="5" min="3" max="15" class="input-control" required>
+                <span class="input-hint">Anos de visibilidade clara do negócio.</span>
+            </div>
+        </section>
+
+        <!-- Seção D: Percepção Estratégica -->
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">D) Avaliação Estratégica (0-100)</h2>
+                <p class="panel-subtitle">Fatores qualitativos que ajustam o valuation.</p>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="moat">Diferencial Defensável</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Moat Competitivo. Barreiras de entrada, força da marca ou vantagens
+                            injustas.</div>
+                    </div>
+                </div>
+                <div class="range-container">
+                    <input id="moat" name="moat" type="range" min="0" max="100" value="60" class="range-input"
+                        oninput="this.nextElementSibling.value = this.value">
+                    <output>60</output>
+                </div>
+                <span class="input-hint">Quão difícil é copiar ou deslocar seu negócio?</span>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="competition">Pressão Competitiva</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Rivalidade da Indústria. Intensidade da disputa por preço e share
+                            (Maior = Maior Risco).</div>
+                    </div>
+                </div>
+                <div class="range-container">
+                    <input id="competition" name="competition" type="range" min="0" max="100" value="50"
+                        class="range-input" oninput="this.nextElementSibling.value = this.value">
+                    <output>50</output>
+                </div>
+                <span class="input-hint">Nível de agressividade dos concorrentes.</span>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="supplier_risk">Dependência Externa</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Risco de Fornecedor. Dependência crítica de terceiros ou insumos
+                            voláteis.</div>
+                    </div>
+                </div>
+                <div class="range-container">
+                    <input id="supplier_risk" name="supplier_risk" type="range" min="0" max="100" value="50"
+                        class="range-input" oninput="this.nextElementSibling.value = this.value">
+                    <output>50</output>
+                </div>
+                <span class="input-hint">Risco de ficar na mão de poucos parceiros.</span>
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="execution">Capacidade de Execução</label>
+                    <div class="help-wrapper">
+                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                        <div class="help-bubble">Management Risk. Qualidade e histórico da gestão para entregar o plano.
+                        </div>
+                    </div>
+                </div>
+                <div class="range-container">
+                    <input id="execution" name="execution" type="range" min="0" max="100" value="55" class="range-input"
+                        oninput="this.nextElementSibling.value = this.value">
+                    <output>55</output>
+                </div>
+                <span class="input-hint">Qualidade do time e da gestão operacional.</span>
+            </div>
+        </section>
+    </div>
+
+    <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+        <button class="btn-primary" type="submit" style="min-width: 200px;">Gerar Valuation</button>
+    </div>
+
 </form>
 {% endblock %}

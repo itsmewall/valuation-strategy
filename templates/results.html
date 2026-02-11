@@ -5,9 +5,10 @@
 <!-- Header / Navigation -->
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <div>
-        <h1 style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 0;">Resumo do Valuation</h1>
-        <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.9rem;">Saída da análise de múltiplos
-            cenários (DCF).</p>
+        <h1 style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 0;">Resultado da Análise
+        </h1>
+        <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.9rem;">Cenários projetados com base nas
+            premissas de negócio.</p>
     </div>
     <a href="/" class="btn-outline">Nova Análise</a>
 </div>
@@ -16,23 +17,23 @@
 <div class="grid-3" style="margin-bottom: 2rem;">
 
     <div class="metric-card">
-        <div class="metric-label">EV Cenário Base</div>
+        <div class="metric-label">Valor Justo (Cenário Base)</div>
         <div class="metric-value">{{ "{:,.0f}".format(out.base.enterprise_value) }}</div>
-        <div class="metric-delta">WACC Alvo: {{ "{:.1%}".format(out.base.wacc) }}</div>
+        <div class="metric-delta">Retorno Exigido Ajustado: {{ "{:.1%}".format(out.base.wacc) }}</div>
     </div>
 
     <div class="metric-card bg-success-subtle" style="border-color: #A7F3D0;">
-        <div class="metric-label text-success">EV Otimista</div>
+        <div class="metric-label text-success">Cenário Otimista</div>
         <div class="metric-value text-success">{{ "{:,.0f}".format(out.optimistic.enterprise_value) }}</div>
         <div class="metric-delta text-success">+{{ "{:.1%}".format((out.optimistic.enterprise_value /
-            out.base.enterprise_value) - 1.0) }} Upside</div>
+            out.base.enterprise_value) - 1.0) }} Potencial</div>
     </div>
 
     <div class="metric-card bg-danger-subtle" style="border-color: #FECACA;">
-        <div class="metric-label text-danger">EV Pessimista</div>
+        <div class="metric-label text-danger">Cenário Conservador</div>
         <div class="metric-value text-danger">{{ "{:,.0f}".format(out.pessimistic.enterprise_value) }}</div>
         <div class="metric-delta text-danger">{{ "{:.1%}".format((out.pessimistic.enterprise_value /
-            out.base.enterprise_value) - 1.0) }} Downside</div>
+            out.base.enterprise_value) - 1.0) }} Risco</div>
     </div>
 
 </div>
@@ -40,45 +41,57 @@
 <!-- Deep Dive Section -->
 <div class="grid-2">
 
-    <!-- Data Table -->
-    <div class="panel" style="padding: 0; overflow: hidden;">
-        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-light);">
-            <h3 class="panel-title">Matriz de Sensibilidade</h3>
+    <!-- Premissas Usadas -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3 class="panel-title">Premissas Utilizadas (Base)</h3>
         </div>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Cenário</th>
-                    <th class="col-right">Crescimento (g)</th>
-                    <th class="col-right">WACC Ajust.</th>
-                    <th class="col-right">EV Implícito</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="font-weight: 500;">Cenário Base</td>
-                    <td class="col-right">{{ "{:.1%}".format(out.base.growth) }}</td>
-                    <td class="col-right">{{ "{:.1%}".format(out.base.wacc) }}</td>
-                    <td class="col-right" style="font-weight: 600;">{{ "{:,.0f}".format(out.base.enterprise_value) }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>Otimista</td>
-                    <td class="col-right">{{ "{:.1%}".format(out.optimistic.growth) }}</td>
-                    <td class="col-right">{{ "{:.1%}".format(out.optimistic.wacc) }}</td>
-                    <td class="col-right">{{ "{:,.0f}".format(out.optimistic.enterprise_value) }}</td>
-                </tr>
-                <tr>
-                    <td>Pessimista</td>
-                    <td class="col-right">{{ "{:.1%}".format(out.pessimistic.growth) }}</td>
-                    <td class="col-right">{{ "{:.1%}".format(out.pessimistic.wacc) }}</td>
-                    <td class="col-right">{{ "{:,.0f}".format(out.pessimistic.enterprise_value) }}</td>
-                </tr>
-            </tbody>
-        </table>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+            <div class="label-wrapper">
+                <label>Crescimento Base (g)</label>
+                <div class="help-wrapper">
+                    <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                    <div class="help-bubble">Taxa de crescimento composta anual (CAGR) projetada para o período
+                        explícito, ajustada pelo Moat e Competição.</div>
+                </div>
+            </div>
+            <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
+                {{ "{:.1%}".format(out.base.growth) }}
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+            <div class="label-wrapper">
+                <label>Custo de Capital (WACC)</label>
+                <div class="help-wrapper">
+                    <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                    <div class="help-bubble">Taxa de desconto final ajustada pelo Risco de Execução e Fornecedores.
+                    </div>
+                </div>
+            </div>
+            <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
+                {{ "{:.1%}".format(out.base.wacc) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="label-wrapper">
+                <label>Peso da Perpetuidade</label>
+                <div class="help-wrapper">
+                    <button type="button" class="help-btn" aria-label="Ajuda">?</button>
+                    <div class="help-bubble">Porcentagem do valor total que vem dos fluxos de caixa após o ano {{
+                        inputs.years }}.</div>
+                </div>
+            </div>
+            <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
+                {{ "{:.1%}".format(out.terminal_share_base) }}
+            </div>
+        </div>
+
     </div>
 
-    <!-- Insights & Structural Data -->
+    <!-- Insights Estruturais -->
     <div class="panel">
         <div class="panel-header">
             <h3 class="panel-title">Insights Estratégicos</h3>
@@ -86,34 +99,63 @@
 
         <ul class="insights-list">
             <li>
-                <strong>Dependência do Valor Terminal:</strong>
-                {{ "{:.1%}".format(out.terminal_share_base) }} do EV Base vem da perpetuidade.
+                <strong>Dependência do Futuro:</strong>
+                {{ "{:.1%}".format(out.terminal_share_base) }} do valor da empresa está dependente da promessa de longo
+                prazo (perpetuidade).
                 {% if out.terminal_share_base > 0.7 %}
-                <span class="text-warning" style="font-size: 0.8rem; margin-left: 6px; font-weight: 500;">(Alta
-                    Sensibilidade)</span>
+                <span class="text-warning" style="font-size: 0.8rem; font-weight: 500;">(Alto Risco)</span>
                 {% endif %}
             </li>
             <li>
-                <strong>Spread do WACC:</strong>
-                Diferença de {{ "{:.1%}".format(out.pessimistic.wacc - out.optimistic.wacc) }} entre o melhor/pior
-                cenário, guiada pelos inputs de risco e execução.
+                <strong>Spread de Risco:</strong>
+                A diferença entre o cenário otimista e conservador é de {{ "{:.1%}".format(out.pessimistic.wacc -
+                out.optimistic.wacc) }} no custo de capital. Melhorar a execução reduz essa incerteza.
             </li>
             <li>
-                <strong>Perfil de Crescimento:</strong>
-                Crescimento base ajustado para {{ "{:.1%}".format(out.base.growth) }} com base nos scores de Moat &
-                Competição.
+                <strong>Alavancagem Operacional:</strong>
+                Com uma margem de {{ "{:.1%}".format(inputs.ebit_margin) }}, a eficiência operacional é um fator crítico
+                para a criação de valor.
             </li>
         </ul>
-
-        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
-            <div style="font-size: 0.8rem; color: var(--text-tertiary);">
-                Metodologia do Modelo:
-                Projeção Discreta ({{out.base.pv_fcfs|round|int}}) + Valor Terminal Descontado
-                ({{out.base.pv_terminal|round|int}}).
-            </div>
-        </div>
     </div>
 
+</div>
+
+<!-- Tabela Resumo -->
+<div class="panel" style="padding: 0; overflow: hidden; margin-top: 2rem;">
+    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-light);">
+        <h3 class="panel-title">Matriz de Sensibilidade</h3>
+    </div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Cenário</th>
+                <th class="col-right">Crescimento (g)</th>
+                <th class="col-right">Retorno Exigido</th>
+                <th class="col-right">Avaliação (EV)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight: 500;">Base</td>
+                <td class="col-right">{{ "{:.1%}".format(out.base.growth) }}</td>
+                <td class="col-right">{{ "{:.1%}".format(out.base.wacc) }}</td>
+                <td class="col-right" style="font-weight: 600;">{{ "{:,.0f}".format(out.base.enterprise_value) }}</td>
+            </tr>
+            <tr>
+                <td>Otimista</td>
+                <td class="col-right">{{ "{:.1%}".format(out.optimistic.growth) }}</td>
+                <td class="col-right">{{ "{:.1%}".format(out.optimistic.wacc) }}</td>
+                <td class="col-right">{{ "{:,.0f}".format(out.optimistic.enterprise_value) }}</td>
+            </tr>
+            <tr>
+                <td>Conservador</td>
+                <td class="col-right">{{ "{:.1%}".format(out.pessimistic.growth) }}</td>
+                <td class="col-right">{{ "{:.1%}".format(out.pessimistic.wacc) }}</td>
+                <td class="col-right">{{ "{:,.0f}".format(out.pessimistic.enterprise_value) }}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}

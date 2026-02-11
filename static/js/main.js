@@ -1,58 +1,75 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const triggers = document.querySelectorAll('.help-trigger');
 
-    // Toggle Function
-    triggers.forEach(trigger => {
-        trigger.addEventListener('click', (e) => {
+    // Global click delegate for tools
+    document.body.addEventListener('click', (e) => {
+        // 1. Handle Help Button Click
+        const trigger = e.target.closest('.help-btn');
+
+        if (trigger) {
             e.preventDefault();
             e.stopPropagation();
 
-            const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+            const bubble = trigger.nextElementSibling;
+            const isActive = trigger.classList.contains('active');
 
-            // Close all others first
-            closeAllTooltips();
+            // Close all other tooltips first
+            closeAll();
 
-            if (!isExpanded) {
-                trigger.setAttribute('aria-expanded', 'true');
-                // Optional: positioning logic if boundary detection is needed
-                adjustTooltipPosition(trigger);
+            // If clicked one wasn't active, open it
+            if (!isActive && bubble) {
+                trigger.classList.add('active');
+                bubble.classList.add('visible');
+                reposition(trigger, bubble);
             }
-        });
-    });
-
-    // Close on Outside Click
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.help-trigger') && !e.target.closest('.tooltip-content')) {
-            closeAllTooltips();
+            return;
         }
+
+        // 2. Ignore clicks inside the bubble itself (allow text selection)
+        if (e.target.closest('.help-bubble')) {
+            return;
+        }
+
+        // 3. Otherwise (clicked outside), close all
+        closeAll();
     });
 
-    // Close on ESC
+    // Handle ESC key to close
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeAllTooltips();
+        if (e.key === 'Escape') closeAll();
+    });
+
+    // Reposition active tooltip on window resize
+    window.addEventListener('resize', () => {
+        const activeBtn = document.querySelector('.help-btn.active');
+        if (activeBtn) {
+            reposition(activeBtn, activeBtn.nextElementSibling);
         }
     });
 
-    function closeAllTooltips() {
-        triggers.forEach(t => t.setAttribute('aria-expanded', 'false'));
+    // Helper: Close all tooltips
+    function closeAll() {
+        document.querySelectorAll('.help-btn.active').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.help-bubble.visible').forEach(b => b.classList.remove('visible'));
     }
 
-    function adjustTooltipPosition(trigger) {
-        // Simple logic to prevent overflow on mobile right edge
-        const tooltip = trigger.nextElementSibling;
-        if (!tooltip) return;
+    // Helper: Position tooltip (Flip logic)
+    function reposition(trigger, bubble) {
+        if (!trigger || !bubble) return;
 
-        // Reset styling
-        tooltip.style.left = '0';
-        tooltip.style.right = 'auto';
+        // Reset to default (Right side placement)
+        bubble.classList.remove('left');
 
-        const rect = tooltip.getBoundingClientRect();
+        const bubbleRect = bubble.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
 
-        if (rect.right > viewportWidth) {
-            tooltip.style.left = 'auto';
-            tooltip.style.right = '0';
+        // If text goes off-screen right, flip to left
+        // 20px buffer for scrollbars/margins
+        if (bubbleRect.right + 20 > viewportWidth) {
+            bubble.classList.add('left');
         }
+
+        // Mobile safety check: if flip causes left overflow (very small screens)
+        // We could add logic here, but CSS width restriction usually handles it.
     }
+
 });
