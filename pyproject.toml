@@ -1,5 +1,5 @@
 [project]
-name = "valuation-strategy"
+name = "valstrat"
 version = "0.1.0"
 description = "Engine de simulação estratégica baseada em valuation (DCF)."
 readme = "README.md"
@@ -9,7 +9,7 @@ authors = [
     {name = "Seu Nome", email = "seu.email@exemplo.com"}
 ]
 dependencies = [
-    "flask",  # Web framework minimalista e suficiente para o escopo.
+    "flask",
 ]
 
 [project.optional-dependencies]
@@ -22,9 +22,12 @@ dev = [
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+include = ["engine*"]
+
 [tool.ruff]
 line-length = 100
-select = ["E", "F", "I"]  # pycodestyle, pyflakes, isort
+select = ["E", "F", "I"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"

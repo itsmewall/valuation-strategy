@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<!-- Header / Navigation -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <h1 style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 0;">Resumo do Valuation</h1>
+        <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.9rem;">Saída da análise de múltiplos
+            cenários (DCF).</p>
+    </div>
+    <a href="/" class="btn-outline">Nova Análise</a>
+</div>
+
+<!-- Key Metrics Panel -->
+<div class="grid-3" style="margin-bottom: 2rem;">
+
+    <div class="metric-card">
+        <div class="metric-label">EV Cenário Base</div>
+        <div class="metric-value">{{ "{:,.0f}".format(out.base.enterprise_value) }}</div>
+        <div class="metric-delta">WACC Alvo: {{ "{:.1%}".format(out.base.wacc) }}</div>
+    </div>
+
+    <div class="metric-card bg-success-subtle" style="border-color: #A7F3D0;">
+        <div class="metric-label text-success">EV Otimista</div>
+        <div class="metric-value text-success">{{ "{:,.0f}".format(out.optimistic.enterprise_value) }}</div>
+        <div class="metric-delta text-success">+{{ "{:.1%}".format((out.optimistic.enterprise_value /
+            out.base.enterprise_value) - 1.0) }} Upside</div>
+    </div>
+
+    <div class="metric-card bg-danger-subtle" style="border-color: #FECACA;">
+        <div class="metric-label text-danger">EV Pessimista</div>
+        <div class="metric-value text-danger">{{ "{:,.0f}".format(out.pessimistic.enterprise_value) }}</div>
+        <div class="metric-delta text-danger">{{ "{:.1%}".format((out.pessimistic.enterprise_value /
+            out.base.enterprise_value) - 1.0) }} Downside</div>
+    </div>
+
+</div>
+
+<!-- Deep Dive Section -->
+<div class="grid-2">
+
+    <!-- Data Table -->
+    <div class="panel" style="padding: 0; overflow: hidden;">
+        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-light);">
+            <h3 class="panel-title">Matriz de Sensibilidade</h3>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Cenário</th>
+                    <th class="col-right">Crescimento (g)</th>
+                    <th class="col-right">WACC Ajust.</th>
+                    <th class="col-right">EV Implícito</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="font-weight: 500;">Cenário Base</td>
+                    <td class="col-right">{{ "{:.1%}".format(out.base.growth) }}</td>
+                    <td class="col-right">{{ "{:.1%}".format(out.base.wacc) }}</td>
+                    <td class="col-right" style="font-weight: 600;">{{ "{:,.0f}".format(out.base.enterprise_value) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Otimista</td>
+                    <td class="col-right">{{ "{:.1%}".format(out.optimistic.growth) }}</td>
+                    <td class="col-right">{{ "{:.1%}".format(out.optimistic.wacc) }}</td>
+                    <td class="col-right">{{ "{:,.0f}".format(out.optimistic.enterprise_value) }}</td>
+                </tr>
+                <tr>
+                    <td>Pessimista</td>
+                    <td class="col-right">{{ "{:.1%}".format(out.pessimistic.growth) }}</td>
+                    <td class="col-right">{{ "{:.1%}".format(out.pessimistic.wacc) }}</td>
+                    <td class="col-right">{{ "{:,.0f}".format(out.pessimistic.enterprise_value) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Insights & Structural Data -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3 class="panel-title">Insights Estratégicos</h3>
+        </div>
+
+        <ul class="insights-list">
+            <li>
+                <strong>Dependência do Valor Terminal:</strong>
+                {{ "{:.1%}".format(out.terminal_share_base) }} do EV Base vem da perpetuidade.
+                {% if out.terminal_share_base > 0.7 %}
+                <span class="text-warning" style="font-size: 0.8rem; margin-left: 6px; font-weight: 500;">(Alta
+                    Sensibilidade)</span>
+                {% endif %}
+            </li>
+            <li>
+                <strong>Spread do WACC:</strong>
+                Diferença de {{ "{:.1%}".format(out.pessimistic.wacc - out.optimistic.wacc) }} entre o melhor/pior
+                cenário, guiada pelos inputs de risco e execução.
+            </li>
+            <li>
+                <strong>Perfil de Crescimento:</strong>
+                Crescimento base ajustado para {{ "{:.1%}".format(out.base.growth) }} com base nos scores de Moat &
+                Competição.
+            </li>
+        </ul>
+
+        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+            <div style="font-size: 0.8rem; color: var(--text-tertiary);">
+                Metodologia do Modelo:
+                Projeção Discreta ({{out.base.pv_fcfs|round|int}}) + Valor Terminal Descontado
+                ({{out.base.pv_terminal|round|int}}).
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

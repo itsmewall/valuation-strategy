@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Valstrat | Motor de Valuation Estratégico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <div class="layout-container">
+        <header class="app-header">
+            <div class="brand">
+                <span class="brand-logo">VALSTRAT</span>
+                <span class="brand-divider">/</span>
+                <span class="brand-subtitle">Motor de Valuation Estratégico</span>
+            </div>
+            <div class="header-status">
+                <span class="status-dot"></span> Sistema Operacional
+            </div>
+        </header>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p class="footer-copy">© 2026 VALSTRAT ANALYTICS. MODELO PROPRIETÁRIO.</p>
+                <p class="footer-meta">USO RESTRITO.</p>
+            </div>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

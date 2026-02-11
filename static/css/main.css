@@ -1,0 +1,513 @@
+/* Existing CSS content starts here */
+:root {
+    /* Institutional Light Palette */
+    --bg-app: #F6F7FB;
+    --bg-surface: #FFFFFF;
+    --bg-input: #FFFFFF;
+
+    --border-light: #E2E4E9;
+    --border-medium: #D1D5DB;
+    --border-focus: #1F6FEB;
+    /* Institutional Blue */
+
+    --text-primary: #0F172A;
+    --text-secondary: #5B6472;
+    --text-tertiary: #949BA5;
+
+    --accent-primary: #1F6FEB;
+    --accent-hover: #1158C7;
+
+    --success-text: #059669;
+    --success-bg: #ECFDF5;
+    --warning-text: #D97706;
+    --warning-bg: #FFFBEB;
+    --danger-text: #DC2626;
+    --danger-bg: #FEF2F2;
+
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-display: 'IBM Plex Sans', sans-serif;
+
+    /* Spacing */
+    --space-unit: 1rem;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+
+    /* Shadows - Subtle & Technical */
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
+    --shadow-input: 0 1px 2px rgba(0, 0, 0, 0.03) inset;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Layout Container */
+.layout-container {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 var(--space-unit);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.app-header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 2rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-logo {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+}
+
+.brand-divider {
+    color: var(--border-medium);
+    font-weight: 300;
+}
+
+.brand-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.header-status {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-surface);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border-light);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--success-text);
+    border-radius: 50%;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding-bottom: 4rem;
+}
+
+/* Panel & Cards */
+.panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.panel-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.panel-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.25rem 0;
+}
+
+.panel-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Grid System */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+/* Inputs */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.input-control {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    background: var(--bg-input);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-input);
+    transition: all 0.2s ease;
+    font-variant-numeric: tabular-nums;
+}
+
+.input-control:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.1);
+}
+
+.input-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+}
+
+/* Buttons */
+.btn-primary {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #FFFFFF;
+    background-color: var(--accent-primary);
+    border: 1px solid transparent;
+    /* Optical sizing */
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(31, 111, 235, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-outline {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-outline:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+    background: var(--bg-surface);
+}
+
+
+/* Results Specifics */
+.metric-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-card);
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.metric-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.25rem;
+}
+
+.metric-delta {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+}
+
+/* Helper Classes for State */
+.text-success {
+    color: var(--success-text);
+}
+
+.text-warning {
+    color: var(--warning-text);
+}
+
+.text-danger {
+    color: var(--danger-text);
+}
+
+.bg-success-subtle {
+    background-color: var(--success-bg);
+    border-color: transparent;
+}
+
+.bg-warning-subtle {
+    background-color: var(--warning-bg);
+    border-color: transparent;
+}
+
+.bg-danger-subtle {
+    background-color: var(--danger-bg);
+    border-color: transparent;
+}
+
+/* Data Table */
+.data-table-wrapper {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-surface);
+}
+
+.data-table th {
+    background: #F9FAFB;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.data-table td {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-light);
+    font-variant-numeric: tabular-nums;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.col-right {
+    text-align: right;
+}
+
+/* Insights List */
+.insights-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.insights-list li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.insights-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent-primary);
+}
+
+
+/* Footer */
+.app-footer {
+    text-align: center;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border-light);
+    margin-top: auto;
+}
+
+.footer-copy {
+    margin: 0 0 4px 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.footer-meta {
+    margin: 0;
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .grid-2,
+    .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .layout-container {
+        padding: 0 1rem;
+    }
+}
+
+/* Tooltip System */
+.label-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.label-wrapper label {
+    margin-bottom: 0;
+    /* Reset margin usually on labels */
+}
+
+.help-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border-medium);
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    padding: 0;
+    line-height: 1;
+}
+
+.help-trigger:hover,
+.help-trigger[aria-expanded="true"] {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background-color: rgba(31, 111, 235, 0.05);
+    /* Very subtle tint */
+}
+
+/* The Tooltip Popover */
+.tooltip-content {
+    display: none;
+    /* Hidden by default */
+    position: absolute;
+    z-index: 100;
+    width: 260px;
+    padding: 12px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+
+    /* Text styling */
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    text-align: left;
+    font-weight: 400;
+
+    /* Positioning logic handled partially by JS, but defaults below */
+    left: 0;
+    top: 24px;
+}
+
+/* Active State */
+.help-trigger[aria-expanded="true"]+.tooltip-content {
+    display: block;
+    animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustment */
+@media (max-width: 480px) {
+    .tooltip-content {
+        width: 220px;
+        right: 0;
+        /* Align to right if needed, but JS positioning usually better */
+    }
+}

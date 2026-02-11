@@ -1,90 +1,88 @@
-# Valuation Strategy
+# Valstrat
 
-**Valuation Strategy** é uma engine de simulação estratégica baseada em valuation (DCF) integrada a uma interface web simples. O projeto conecta inputs operacionais e fatores estratégicos quantificados (estilo SWOT) para ajustar premissas financeiras, gerando projeções de fluxo de caixa e múltiplos cenários de valor intrínseco.
+**Valstrat** é uma engine de simulação estratégica baseada em valuation (DCF) desenvolvida em Python com Flask. O projeto conecta inputs operacionais e quantificação estratégica para gerar projeções financeiras e cenários de valor intrínseco, servindo como ferramenta de estudo para modelagem financeira e análise de negócios.
 
 ## Motivação
 
-Estratégia sem números é apenas narrativa; números sem estratégia são cegos. 
-Muitos modelos de valuation falham ao tratar a estratégia como um "anexo qualitativo". O **Valuation Strategy** torna a estratégia parte integrante do modelo matemático: cada decisão estratégica (ex: "Expansão agressiva") deve ter uma contrapartida numérica explícita (ex: "+X% receita, -Y% margem"), forçando a consistência entre a visão de negócio e a realidade financeira.
+A premissa central é que estratégia sem números é apenas narrativa, e números sem estratégia são cegos. O **Valstrat** integra essas disciplinas ao exigir que decisões estratégicas (ex: "expansão de mercado") tenham contrapartidas numéricas explícitas nas premissas financeiras, demonstrando o impacto direto na geração de caixa e no valor da empresa.
 
 ## Como Funciona
 
-O fluxo de dados segue uma lógica linear e causal:
+O fluxo de dados segue uma lógica linear:
 
-1.  **Inputs Base**: O usuário insere dados históricos e premissas operacionais iniciais (Receita, Margens, CAPEX, WACC).
-2.  **Ajustes Estratégicos**: Fatores qualitativos (Forças, Fraquezas, Oportunidades, Ameaças) são traduzidos em multiplicadores numéricos.
-3.  **Projeções**: O sistema aplica os ajustes às premissas base para projetar o DRE e Fluxo de Caixa Livre (FCF) para os próximos anos.
-4.  **Valuation (DCF)**:
-    *   Cálculo do valor presente dos fluxos explícitos.
-    *   Cálculo do valor terminal (Perpetuidade).
-    *   Desconto pelo WACC ajustado ao risco da estratégia.
-5.  **Cenários e Insights**: Geração automática de cenários (Base, Otimista, Pessimista) para análise de sensibilidade e tomada de decisão.
+1.  **Inputs Operacionais**: Entrada de dados históricos e premissas base (Receita, Margens, CAPEX, WACC).
+2.  **Ajustes Estratégicos**: Fatores qualitativos (SWOT) são traduzidos em multiplicadores para ajustar as premissas.
+3.  **Projeções**: O motor gera o DRE e Fluxo de Caixa Livre (FCF) projetados.
+4.  **FCF/DCF**: Cálculo do valor presente dos fluxos e valor terminal (Perpetuidade/Múltiplo).
+5.  **Cenários**: Geração automática de cenários (Base, Otimista, Pessimista).
+6.  **Insights**: Análise de sensibilidade e impacto das decisões no valuation.
 
 ## Estrutura do Projeto
 
-A organização é flat e modular para manter a simplicidade:
-
 ```text
-valuation-strategy/
-├── engine/          # Núcleo da lógica de negócio
-│   ├── model.py     # Classes de projeção e valuation
-│   ├── finance.py   # Funções utilitárias financeiras
-│   ├── strategy.py  # Lógica de quantificação estratégica
-│   └── scenarios.py # Gerador de cenários
-├── static/          # Assets (CSS, JS)
-├── templates/       # Arquivos HTML (Jinja2)
-├── config.py        # Configurações da aplicação Flask
-├── run.py           # Ponto de entrada (Entrypoint)
-└── pyproject.toml   # Gerenciamento de dependências
+valstrat/
+  README.md
+  pyproject.toml
+  .env.example
+  .gitignore
+  run.py
+  config.py
+  engine/
+    __init__.py
+    model.py
+    finance.py
+    strategy.py
+    scenarios.py
+  templates/
+    layout.html
+    index.html
+    results.html
+  static/
+    css/main.css
+    js/main.js
 ```
 
 ## Como Rodar Localmente
 
-Pré-requisitos: Python 3.11+.
-
-1.  **Clone o repositório e entre na pasta**:
+1.  **Clone o repositório**:
     ```bash
-    git clone https://github.com/itsmewall/valuation-strategy.git
-    cd valuation-strategy
+    git clone https://github.com/seu-usuario/valstrat.git
+    cd valstrat
     ```
 
-2.  **Crie e ative o ambiente virtual**:
+2.  **Configure o ambiente virtual**:
     ```bash
     python -m venv venv
-    # Windows:
+    # Windows
     venv\Scripts\activate
-    # Linux/Mac:
+    # Linux/Mac
     source venv/bin/activate
     ```
 
 3.  **Instale as dependências**:
     ```bash
-    pip install .
-    # Ou para desenvolvimento (com pytest/ruff):
-    pip install .[dev]
+    # Instalar pacote em modo editável
+    pip install -e .
+    # (Opcional) Instalar dependências de dev
+    pip install -e .[dev]
     ```
 
-4.  **Configure as variáveis de ambiente (opcional)**:
-    Copie o arquivo de exemplo:
-    ```bash
-    cp .env.example .env
-    ```
-
-5.  **Execute a aplicação**:
+4.  **Execute a aplicação**:
     ```bash
     python run.py
     ```
-    Acesse em: `http://127.0.0.1:5000`
+    Acesse no navegador: `http://127.0.0.1:5000`
 
 ## Roadmap
 
-*   Implementar testes unitários para o módulo `engine`.
-*   Adicionar persistência leve (SQLite) para salvar simulações.
-*   Criar funcionalidade de exportação de relatórios (PDF/Excel).
-*   Melhorar a visualização de sensibilidade (Tabela de Dados).
+1.  Implementar persistência de dados (SQLite) para salvar simulações.
+2.  Adicionar exportação de resultados em PDF/Excel.
+3.  Criar módulo de Análise de Sensibilidade (Tabela de Dados).
+4.  Melhorar a visualização gráfica dos cenários.
+5.  Implementar autenticação básica de usuário.
 
 ## Disclaimer
 
-**Este projeto tem fins estritamente educacionais e de portfólio.**
+**Este software não é uma recomendação de investimento.**
 
-O **Valuation Strategy** é uma ferramenta de simulação e não deve ser utilizado como base única para decisões reais de investimento, fusão ou aquisição. O autor não se responsabiliza por perdas financeiras decorrentes do uso deste software.
+O **Valstrat** é um projeto educacional para simulação de cenários. Os resultados gerados são hipotéticos e dependem inteiramente das premissas inseridas pelo usuário. Não utilize esta ferramenta para tomar decisões financeiras reais. O autor não se responsabiliza por quaisquer perdas ou danos decorrentes do uso deste software.
