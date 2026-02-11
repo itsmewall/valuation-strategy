@@ -1,12 +1,12 @@
 [project]
-name = "valstrat"
+name = "Valuation-Strategy"
 version = "0.1.0"
 description = "Engine de simulação estratégica baseada em valuation (DCF)."
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
-    {name = "Seu Nome", email = "seu.email@exemplo.com"}
+    {name = "Wallace", email = "wallacedeoliveira10@hotmail.com"}
 ]
 dependencies = [
     "flask",
