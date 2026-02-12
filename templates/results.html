@@ -163,54 +163,305 @@
     </div>
 </section>
 
-<!-- Details & Insights (Collapsible) -->
-<details class="panel" style="padding: 0; overflow: hidden; margin-top: 2rem;">
-    <summary
-        style="padding: 1.5rem; background: #F9FAFB; cursor: pointer; font-weight: 600; color: var(--text-secondary); outline: none;">
-        Ver Detalhes Técnicos e Premissas
-    </summary>
-
-    <div class="grid-2" style="padding: 1.5rem; border-top: 1px solid var(--border-light);">
-
-        <!-- Premissas Usadas -->
-        <div>
-            <div class="panel-header" style="border: none; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                <h3 class="panel-title">Premissas Utilizadas (Base)</h3>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 1rem;">
-                <div class="label-wrapper">
-                    <label>Crescimento Base (g)</label>
-                    <div class="help-wrapper">
-                        <button type="button" class="help-btn" aria-label="Ajuda">?</button>
-                        <div class="help-bubble">Taxa de crescimento composta anual (CAGR) projetada para o período
-                            explícito, ajustada pelo Moat e Competição.</div>
-                    </div>
-                </div>
-                <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;">
-                    {{ "{:.1%}".format(out.base.growth) }}
-                </div>
-            </div>
-            <!-- ... additional details ... -->
-        </div>
-
-        <!-- Insights Estruturais -->
-        <div>
-            <div class="panel-header" style="border: none; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                <h3 class="panel-title">Insights Estratégicos</h3>
-            </div>
-            <ul class="insights-list">
-                <li>
-                    <strong>Dependência do Futuro:</strong>
-                    {{ "{:.1%}".format(out.terminal_share_base) }} do valor da empresa está dependente da promessa de
-                    longo prazo (perpetuidade).
-                </li>
-                <!-- ... additional insights ... -->
-            </ul>
-        </div>
-
+<!-- 1. DIAGNÓSTICO DO VALUATION -->
+<section class="panel" style="margin-top: 2rem;">
+    <div class="panel-header">
+        <h2 class="panel-title">Diagnóstico do Valuation</h2>
+        <p class="panel-subtitle">Indicadores fundamentais da tese de investimento.</p>
     </div>
-</details>
+
+    <!-- 3 Cards Simples -->
+    <div class="grid-3">
+        <!-- Card 1: Receita e CAGR -->
+        <div class="metric-card">
+            <div class="metric-label">Receita Final (Ano {{ inputs.years }})</div>
+            <div class="metric-value">R$ {{ "{:,.0f}".format(out.revenue_final_base) if out.revenue_final_base is not
+                none else '0' }}</div>
+            <div class="metric-desc" style="color: var(--text-secondary);">
+                Crescimento Anual (CAGR): <strong>{{ "{:.1%}".format(out.cagr_base) if out.cagr_base is not none else
+                    '0%' }}</strong>
+            </div>
+        </div>
+
+        <!-- Card 2: FCF e Margem -->
+        <div class="metric-card">
+            <div class="metric-label">Caixa Livre Acumulado</div>
+            <div class="metric-value">R$ {{ "{:,.0f}".format(out.fcf_cumulative_base) if out.fcf_cumulative_base is not
+                none else '0' }}</div>
+            <div class="metric-desc" style="color: var(--text-secondary);">
+                Margem FCF Final: <strong>{{ "{:.1%}".format(out.fcf_margin_final_base) if out.fcf_margin_final_base is
+                    not none else '0%' }}</strong>
+            </div>
+        </div>
+
+        <!-- Card 3: Peso Terminal -->
+        <div class="metric-card">
+            <div class="metric-label">Peso da Perpetuidade</div>
+            <div class="metric-value">{{ "{:.1%}".format(out.terminal_share_base) if out.terminal_share_base is not none
+                else '0%' }}</div>
+            <div class="metric-desc" style="color: var(--text-secondary);">
+                do valor total estimado
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. ALAVANCAS DE VALOR (LEVERS) -->
+<section class="panel" style="margin-top: 2rem;">
+    <div class="panel-header">
+        <h2 class="panel-title">Alavancas de Valor</h2>
+        <p class="panel-subtitle">Sensibilidade: Impacto direto no Enterprise Value (Base).</p>
+    </div>
+
+    <div class="grid-3">
+        {% for lever in out.levers %}
+        <div class="metric-card" style="border-left: 4px solid #10B981;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                <div style="font-weight: 700; color: #059669;">{{ lever.title }}</div>
+                <div style="text-align: right;">
+                    <div style="font-weight: 700; color: #059669;">+ R$ {{ "{:,.0f}".format(lever.impact) }}</div>
+                    <div style="font-size: 0.75rem; color: #059669;">+{{ "{:.1%}".format(lever.pct) }}</div>
+                </div>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                {{ lever.description }}
+            </div>
+
+            <!-- EXPLAINER BLOCK START -->
+            {% if lever.title == 'Risco -1pp' %}
+            <div class="card-explanation" style="margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
+                <p style="font-size: 0.85rem; margin-bottom: 0.25rem; color: var(--text-secondary);">Reduzir o custo de
+                    capital em 1 ponto percentual significa que o mercado exigiria menor retorno para investir no
+                    negócio. Como o valuation desconta todos os fluxos futuros por essa taxa, pequenas reduções no risco
+                    produzem efeitos amplificados no valor presente.</p>
+                <p class="muted" style="font-size: 0.75rem; color: #6b7280; font-style: italic; margin: 0;">Este modelo
+                    indica alta sensibilidade à percepção de risco.</p>
+            </div>
+            {% elif lever.title == 'Crescimento +1pp' %}
+            <div class="card-explanation" style="margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
+                <p style="font-size: 0.85rem; margin-bottom: 0.25rem; color: var(--text-secondary);">Aumentar a taxa de
+                    crescimento expande a base projetada de receitas ao longo do horizonte analisado. O efeito é
+                    cumulativo e se intensifica no valor terminal.</p>
+                <p class="muted" style="font-size: 0.75rem; color: #6b7280; font-style: italic; margin: 0;">Crescimento
+                    sustentável amplia valor estrutural quando suportado por eficiência operacional.</p>
+            </div>
+            {% elif lever.title == 'Margem +2pp' %}
+            <div class="card-explanation" style="margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
+                <p style="font-size: 0.85rem; margin-bottom: 0.25rem; color: var(--text-secondary);">A expansão de
+                    margem operacional aumenta diretamente o fluxo de caixa livre gerado por cada unidade de receita.
+                    Diferente do crescimento, ganhos de margem não exigem necessariamente maior capital investido.</p>
+                <p class="muted" style="font-size: 0.75rem; color: #6b7280; font-style: italic; margin: 0;">Eficiência
+                    operacional tende a produzir criação de valor mais resiliente.</p>
+            </div>
+            {% endif %}
+            <!-- EXPLAINER BLOCK END -->
+
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 3. PONTOS DE ATENÇÃO (DIAGNOSTICS) -->
+{% if out.diagnostics %}
+<section class="panel" style="margin-top: 2rem;">
+    <div class="panel-header">
+        <h2 class="panel-title">Pontos de Atenção</h2>
+        <p class="panel-subtitle">Fatores que impactam positiva ou negativamente a análise.</p>
+    </div>
+
+    <div class="grid-3">
+        {% for diag in out.diagnostics %}
+        <div class="metric-card" style="border-left: 4px solid #F59E0B;">
+            <div style="font-weight: 700; color: #D97706; margin-bottom: 0.5rem;">
+                {{ diag.title }}
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+                {{ diag.explanation }}
+            </div>
+
+            <!-- EXPLAINER BLOCK START -->
+            {% if diag.title == 'Dependência do longo prazo' %}
+            <div class="card-explanation" style="margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
+                <p style="font-size: 0.85rem; margin-bottom: 0.25rem; color: var(--text-secondary);">Grande parte do
+                    valuation está concentrada na perpetuidade, tornando o modelo sensível a premissas de estabilidade e
+                    crescimento sustentável.</p>
+                <p class="muted" style="font-size: 0.75rem; color: #6b7280; font-style: italic; margin: 0;">Quanto maior
+                    essa dependência, maior a sensibilidade a pequenas variações na taxa terminal.</p>
+            </div>
+            {% elif diag.title == 'Crescimento consome caixa' %}
+            <div class="card-explanation" style="margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
+                <p style="font-size: 0.85rem; margin-bottom: 0.25rem; color: var(--text-secondary);">Níveis elevados de
+                    reinvestimento indicam que o crescimento exige alocação contínua de capital, reduzindo o fluxo de
+                    caixa livre disponível no curto prazo.</p>
+                <p class="muted" style="font-size: 0.75rem; color: #6b7280; font-style: italic; margin: 0;">Modelos
+                    intensivos em capital dependem mais de financiamento ou retenção de lucros.</p>
+            </div>
+            {% endif %}
+            <!-- EXPLAINER BLOCK END -->
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% else %}
+<section class="panel" style="margin-top: 2rem;">
+    <div class="panel-header">
+        <h2 class="panel-title">Pontos de Atenção</h2>
+        <p class="panel-subtitle">Diagnóstico automático.</p>
+    </div>
+    <div class="metric-card">
+        <div style="color: var(--text-secondary);">Nenhum ponto crítico detectado com estas premissas.</div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Details & Insights (Collapsible) -->
+<!-- Premissas e Detalhes Técnicos (Expanded) -->
+<section class="panel" id="premissas" style="margin-top: 2rem;">
+    <div class="panel-header">
+        <h2 class="panel-title">Premissas e Como o Modelo Chegou no Valor</h2>
+        <p class="panel-subtitle">Tradução: o que você informou → o que o DCF assume → onde o valor ficou concentrado.
+        </p>
+    </div>
+
+    <div class="grid-3" style="align-items: start; margin-bottom: 2rem;">
+        <!-- Col 1: Business Inputs -->
+        <div>
+            <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Premissas
+                do Negócio (o que você informou)</h3>
+            <div style="background: #F9FAFB; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-light);">
+                <div class="metric-detail-row"><span>Faturamento Atual:</span> <strong>R$ {{
+                        "{:,.0f}".format(inputs.revenue0) }}</strong></div>
+                <div class="metric-detail-row"><span>Margem Operacional:</span> <strong>{{
+                        "{:.1%}".format(inputs.ebit_margin) }}</strong></div>
+                <div class="metric-detail-row"><span>Impostos:</span> <strong>{{ "{:.1%}".format(inputs.tax_rate)
+                        }}</strong></div>
+                <div class="metric-detail-row"><span>Reinvestimento (CAPEX):</span> <strong>{{
+                        "{:.1%}".format(inputs.capex_pct) }}</strong></div>
+                <div class="metric-detail-row"><span>Necessidade de Giro:</span> <strong>{{
+                        "{:.1%}".format(inputs.nwc_pct) }}</strong></div>
+                <div class="metric-detail-row"><span>Horizonte Projetado:</span> <strong>{{ inputs.years }}
+                        anos</strong></div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Esses itens determinam o
+                caixa que o negócio consegue gerar.</p>
+        </div>
+
+        <!-- Col 2: Financial Assumptions -->
+        <div>
+            <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Premissas
+                Financeiras (mercado)</h3>
+            <div style="background: #F9FAFB; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-light);">
+                <div class="metric-detail-row"><span>Retorno Mínimo (WACC):</span> <strong>{{
+                        "{:.1%}".format(out.base.wacc) }}</strong></div>
+                <div class="metric-detail-row"><span>Crescimento (g):</span> <strong>{{ "{:.1%}".format(out.base.growth)
+                        }}</strong></div>
+                <div class="metric-detail-row"><span>Crescimento Terminal:</span> <strong>{{
+                        "{:.1%}".format(inputs.terminal_g) }}</strong></div>
+                <div class="metric-detail-row"><span>Peso da Perpetuidade:</span> <strong>{{
+                        "{:.1%}".format(out.terminal_share_base) }}</strong></div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Retorno mínimo alto = mais
+                risco = menor valor. Quanto maior a dependência do terminal, mais sensível.</p>
+        </div>
+
+        <!-- Col 3: Technical Result -->
+        <div>
+            <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Resultado
+                Técnico (DCF)</h3>
+            <div style="background: #F9FAFB; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-light);">
+                <div class="metric-detail-row"><span>Valor Base (Hoje):</span> <strong>R$ {{
+                        "{:,.0f}".format(out.base.enterprise_value) }}</strong></div>
+                <div class="metric-detail-row"><span class="text-success">Cenário Otimista:</span> <strong>R$ {{
+                        "{:,.0f}".format(out.optimistic.enterprise_value) }}</strong></div>
+                <div class="metric-detail-row"><span class="text-danger">Cenário Pessimista:</span> <strong>R$ {{
+                        "{:,.0f}".format(out.pessimistic.enterprise_value) }}</strong></div>
+
+                <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #E5E7EB;">
+                    <div class="metric-detail-row"><span>Caixa Ano 1:</span> <strong>{{ "R$
+                            {:,.0f}".format(out.base.fcf_series[0]) if out.base.fcf_series else '-' }}</strong></div>
+                    <div class="metric-detail-row"><span>Caixa Ano Final:</span> <strong>{{ "R$
+                            {:,.0f}".format(out.base.fcf_series[-1]) if out.base.fcf_series else '-' }}</strong></div>
+                </div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">O DCF soma o valor presente
+                do caixa anual + valor terminal.</p>
+        </div>
+    </div>
+
+    <!-- Annual Summary Table -->
+    <div style="margin-bottom: 2rem;">
+        <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Resumo Anual
+            (Cenário Base)</h3>
+        <div style="overflow-x: auto; border: 1px solid var(--border-light); border-radius: 8px;">
+            <table class="data-table" style="width: 100%;">
+                <thead>
+                    <tr style="background: #F9FAFB;">
+                        <th style="font-weight: 600; font-size: 0.8rem; color: var(--text-secondary);">Ano</th>
+                        <th
+                            style="font-weight: 600; font-size: 0.8rem; color: var(--text-secondary); text-align: right;">
+                            Receita Projetada (R$)</th>
+                        <th
+                            style="font-weight: 600; font-size: 0.8rem; color: var(--text-secondary); text-align: right;">
+                            Fluxo de Caixa Livre (FCF) (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if out.base.revenue_series and out.base.fcf_series %}
+                    {% for i in range(inputs.years) %}
+                    <tr>
+                        <td>{{ out.years_labels[i] }}</td>
+                        <td style="text-align: right;">{{ "{:,.0f}".format(out.base.revenue_series[i]) }}</td>
+                        <td style="text-align: right;">{{ "{:,.0f}".format(out.base.fcf_series[i]) }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: var(--text-secondary);">Séries anuais não
+                            disponíveis.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Glossary -->
+    <div style="padding-top: 2rem; border-top: 1px solid var(--border-light);">
+        <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Glossário
+            Prático</h3>
+        <div class="grid-3" style="gap: 2rem;">
+            <div>
+                <dt style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Valor estimado do negócio
+                </dt>
+                <dd style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Quanto a empresa valeria
+                    hoje se fosse vendida, considerando sua capacidade futura de gerar dinheiro (Enterprise Value).</dd>
+            </div>
+            <div>
+                <dt style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Retorno mínimo exigido
+                </dt>
+                <dd style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">A taxa de retorno que
+                    compensa o risco do investimento (WACC). Quanto maior o risco, maior essa taxa e menor o valor da
+                    empresa.</dd>
+            </div>
+            <div>
+                <dt style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Crescimento projetado</dt>
+                <dd style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Taxa média de aumento
+                    das vendas (g) durante o período analisado.</dd>
+            </div>
+            <div>
+                <dt style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Reinvestimento</dt>
+                <dd style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Parcela da receita que
+                    precisa ser gasta em máquinas (CAPEX) e estoque/clientes (Capital de Giro) para sustentar o
+                    crescimento.</dd>
+            </div>
+            <div>
+                <dt style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Valor terminal</dt>
+                <dd style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">O valor da empresa
+                    projetado para a perpetuidade, após o período explícito de análise.</dd>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- Data Injection via JSON Script -->
 <script type="application/json" id="chart-data">

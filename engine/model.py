@@ -38,3 +38,19 @@ class Output:
     pessimistic: ScenarioResult
     terminal_share_base: float
     years_labels: list[int]
+    
+    # Detailed Analysis
+    revenue_final_base: float
+    fcf_final_base: float
+    fcf_cumulative_base: float
+    cagr_base: float
+    fcf_margin_final_base: float
+
+    # Sensitivities (Levers)
+    delta_margin_plus_2pp: float
+    delta_wacc_minus_1pp: float
+    delta_growth_plus_1pp: float
+
+    # Qualitative / Insights
+    diagnostics: list[dict]
+    levers: list[dict]
